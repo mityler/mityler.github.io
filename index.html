@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" href="styles/main.css">
+
+        <script type="text/javascript" src="scripts/jquery-3.4.1.min.js"></script>
+        <script type="text/javascript" src="scripts/azure-storage.blob.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="scripts/main.js"></script>
+    </head>
+
+    <body>
+        <div class="row">
+            <div class="title"><h2></h2><p></p></div>
+        </div>
+        <div id="tag-row" class="row center">
+            <h3>What have users said about this stop?</h3>
+            <p><i>select and save the tags below to share your thoughts</i></p>
+            <div class="container tag-container"></div>
+            <button id="save-button" type="button">Save</button>
+        </div>
+        <div id="img-row" class="row center">
+            <h3>What does the stop look like?</h3>
+            <p><i>view and share images of this bus stop</i></p>
+            <div class="container image-container"></div>
+            <button id="upload-button" type="button">Select Image to Upload</label>
+        </div>
+        <div id="loading"><div class="lds-dual-ring"></div></div>
+
+        <!-- modal for viewing images -->
+        <div id="img-modal" class="modal">
+            <span class="close">&times</span>
+            <img>
+        </div>
+
+        <!-- modal for uploading images -->
+        <div id="upload-modal" class="modal">
+            <span class="close">&times</span>
+            <div id="image-form">
+                <div class="form-section">
+                    <p>Please select an image</p>
+                    <div class="input-wrapper">
+                        <input id="images" type="file" accept=".jpg, .jpeg, .png, .bmp">
+                    </div>
+                </div>
+                <div class="form-section">
+                    <p>Please provide a one sentence description</p>
+                    <textarea></textarea>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" id="cancel">Cancel</button>
+                    <button type="button" id="ok" disabled 
+                                          title='please select an image before uploading'>Upload</button>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
