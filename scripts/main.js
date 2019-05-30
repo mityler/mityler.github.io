@@ -13,6 +13,7 @@ const SAS = '?sv=2018-03-28&ss=b&srt=sco&sp=rwdlac&se=2019-06-29T03:' +
             '16:47Z&st=2019-05-28T19:16:47Z&spr=https&sig=7fmidcPpGw' + 
             'wNu2CPqV%2B10d9jketDmm7p08BgVYiuMhc%3D';
 const BLOB_STORE = AzureStorage.Blob.createBlobServiceWithSas(URI, SAS);
+const WEB_SERVICE = "40.83.171.176:8080/stops/";
 
 /* sets everything up once we have the stop data */
 function setup(data) {
@@ -90,7 +91,7 @@ function setup(data) {
 
         $.ajax({
             type: 'PUT',
-            url: 'http://localhost:8080/stops/' + stop.id + '/tags',
+            url: WEB_SERVICE + stop.id + '/tags',
             data: JSON.stringify(msg),
             dataType: 'json',
             contentType: 'application/json',
@@ -164,7 +165,7 @@ function setup(data) {
 
                     $.ajax({
                         type: 'PUT',
-                        url: 'http://localhost:8080/stops/' + stop.id + '/image',
+                        url: WEB_SERVICE + stop.id + '/image',
                         data: JSON.stringify(newImage),
                         dataType: 'json',
                         contentType: 'application/json',
@@ -264,7 +265,7 @@ function getCard(image) {
 $(document).ready(function() {
     $.ajax({
         type: 'GET',
-        url: 'http://localhost:8080/stops/' + getQueryParam('id'),
+        url: WEB_SERVICE + getQueryParam('id'),
         contentType: 'text/json',
         success: function (data) {
             $('#loading').hide();
