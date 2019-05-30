@@ -12,7 +12,7 @@ const SAS = '?sv=2018-03-28&ss=b&srt=sco&sp=rwdlac&se=2019-06-29T03:' +
             '16:47Z&st=2019-05-28T19:16:47Z&spr=https&sig=7fmidcPpGw' + 
             'wNu2CPqV%2B10d9jketDmm7p08BgVYiuMhc%3D';
 const BLOB_STORE = AzureStorage.Blob.createBlobServiceWithSas(URI, SAS);
-const WEB_SERVICE = 'http://40.83.171.176:8080/stops/';
+const WEB_SERVICE = 'http://40.118.214.163:8080/stops/';
 
 /* sets everything up once we have the stop data */
 function setup(data) {
