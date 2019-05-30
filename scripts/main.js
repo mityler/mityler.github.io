@@ -292,6 +292,7 @@ function put(stop, success, error) {
 
 /* make a GET request and then load the page */
 $(document).ready(function() {
+    console.log(WEB_SERVICE + getQueryParam('id'));
     $.ajax({
         type: 'GET',
         url: WEB_SERVICE + getQueryParam('id'),
