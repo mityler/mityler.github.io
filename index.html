@@ -7,11 +7,22 @@
         <script type="text/javascript" src="scripts/jquery-3.4.1.min.js"></script>
         <script type="text/javascript" src="scripts/azure-storage.blob.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="scripts/main.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
 
     <body>
         <div class="row">
-            <div class="title"><h2></h2><p></p></div>
+            <div class="title">
+                <h2></h2>
+                <p></p>
+                <a href="#img-row"><i>view images</i></a>
+            </div>
+        </div>
+        <div class="row center">
+            <h3>Is this stop accessible to you?</h3>
+            <p id="access-text"></p>
+            <button id="yes" class="green">Yes</button>
+            <button id="no" class="red">No</button>
         </div>
         <div id="tag-row" class="row center">
             <h3>What have users said about this stop?</h3>
@@ -22,8 +33,8 @@
         <div id="img-row" class="row center">
             <h3>What does the stop look like?</h3>
             <p><i>view and share images of this bus stop</i></p>
+            <button id="upload-button" type="button">Select Image to Upload</button>
             <div class="container image-container"></div>
-            <button id="upload-button" type="button">Select Image to Upload</label>
         </div>
         <div id="loading"><div class="lds-dual-ring"></div></div>
 
@@ -48,8 +59,8 @@
                     <textarea></textarea>
                 </div>
                 <div class="modal-buttons">
-                    <button type="button" id="cancel">Cancel</button>
-                    <button type="button" id="ok" disabled 
+                    <button type="button" id="cancel" class="red">Cancel</button>
+                    <button type="button" id="ok" class="green" disabled 
                                           title='please select an image before uploading'>Upload</button>
                 </div>
             </div>

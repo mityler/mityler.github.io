@@ -1,5 +1,4 @@
 var stop;   /* queried stop data */
-var added;  /* array of updated tag values */
 var files;  /* files being uploaded */
 
 const ESCAPE = 27;                              /* keycode of the escape button */
@@ -13,7 +12,7 @@ const SAS = '?sv=2018-03-28&ss=b&srt=sco&sp=rwdlac&se=2019-06-29T03:' +
             '16:47Z&st=2019-05-28T19:16:47Z&spr=https&sig=7fmidcPpGw' + 
             'wNu2CPqV%2B10d9jketDmm7p08BgVYiuMhc%3D';
 const BLOB_STORE = AzureStorage.Blob.createBlobServiceWithSas(URI, SAS);
-const WEB_SERVICE = "40.83.171.176:8080/stops/";
+const WEB_SERVICE = 'http://40.83.171.176:8080/stops/';
 
 /* sets everything up once we have the stop data */
 function setup(data) {
@@ -25,16 +24,13 @@ function setup(data) {
     );
     $('#score h1').html(stop.score);
     $('#score p').html('(' + stop.ratings + ' ratings)');
+    $('#access-text').html(
+        '<i>accessible to ' + stop.yesAccessible + ' users, inaccessible to ' 
+                            + stop.noAccessible + ' users</i>'
+    );
 
     /* reformat the data for use later */
-    stop.data = [];
-    Object.keys(stop.tags.tagStore).forEach(function(tag) {
-        stop.data.push({
-            'name': tag,
-            'count': stop.tags.tagStore[tag]
-        });
-    });
-    stop.data.sort(function(a, b) { return b.count - a.count; });
+    stop.tags.sort(function(a, b) { return b.count - a.count; });
     stop.images.sort(function(a, b) {
         let d1 = Date.parse(a.dateUploaded);
         let d2 = Date.parse(b.dateUploaded);
@@ -44,12 +40,11 @@ function setup(data) {
         else return 0;
     });
 
-    /* for keeping track of updated tags */
-    added = new Array(stop.data.length).fill(0);
+    /* for keeping track of uploading files */
     files = [];
 
     /* Puts the initial tags on the page */
-    for (let i = 0; i < stop.data.length; i++) {
+    for (let i = 0; i < stop.tags.length; i++) {
         $('.tag-container').append(getTag(i));
     }
 
@@ -69,13 +64,13 @@ function setup(data) {
         $('#save-button').text('Save');
         let i = $(this).attr('id').charAt(4);
         if (!$(this).attr('class').includes('tag-selected')) {
-            added[i] = 1;
+            stop.tags[i].count = stop.tags[i].count + 1;
             $(this).attr('class', 'tag tag-selected');
-            $(this).html(format(stop.data[i].name, stop.data[i].count + 1));
+            $(this).html(format(stop.tags[i].label, stop.tags[i].count));
         } else {
-            added[i] = 0;
+            stop.tags[i].count = stop.tags[i].count - 1;
             $(this).attr('class', getClass(i));
-            $(this).html(format(stop.data[i].name, stop.data[i].count));
+            $(this).html(format(stop.tags[i].label, stop.tags[i].count));
         }
     });
 
@@ -83,22 +78,14 @@ function setup(data) {
     $('#save-button').click(function() {
         $(this).text('Saving...');
 
-        let tags = {};
-        for (let i = 0; i < added.length; i++) {
-            tags[stop.data[i].name] = stop.data[i].count + added[i];
-        }
-        let msg = {'tags': tags};
-
-        $.ajax({
-            type: 'PUT',
-            url: WEB_SERVICE + stop.id + '/tags',
-            data: JSON.stringify(msg),
-            dataType: 'json',
-            contentType: 'application/json',
-            success: function (result) {
+        put(stop,
+            function(res) {
                 $('#save-button').text('Saved!');
+            },
+            function(err) {
+                console.log(err);
             }
-        });
+        );
     });
 
     /* Opens the modal to upload an image */
@@ -126,6 +113,36 @@ function setup(data) {
             resetModal();
             $('.modal').hide();
         }
+    });
+
+    $('#yes').click(function() {
+        $('#no').attr('disabled', true);
+        $('#yes').html('Saving...');
+        stop.yesAccessible++;
+        put(stop,
+            function(res) {
+                $('#yes').html('Saved!');
+
+            },
+            function(err) {
+                console.log(err);
+            }
+        );
+    });
+
+    $('#no').click(function() {
+        $('#yes').attr('disabled', true);
+        $('#no').html('Saving...');
+        stop.noAccessible++;
+        put(stop,
+            function(res) {
+                $('#no').html('Saved!');
+
+            },
+            function(err) {
+                console.log(err);
+            }
+        );
     });
 
     /* Close the modal when 'Cancel' is clicked */
@@ -163,22 +180,18 @@ function setup(data) {
                         );
                     });
 
-                    $.ajax({
-                        type: 'PUT',
-                        url: WEB_SERVICE + stop.id + '/image',
-                        data: JSON.stringify(newImage),
-                        dataType: 'json',
-                        contentType: 'application/json',
-                        success: function (result) {
-                            /* don't need to do anything */
+                    put(stop,
+                        function(res) {
+                            resetModal();
+                            $('.modal').hide();
+                        },
+                        function(err) {
+                            console.log(err);
                         }
-                    });
+                    );
 
-                    // clean up the form
-                    resetModal();
-                    $('.modal').hide();
                 } else {
-                    /* TODO: handle blob error */
+                    console.log(error);
                 }
             });
     });
@@ -213,7 +226,7 @@ function format(name, count) {
  * Returns the class of the tag with the given index based on counts
  */
 function getClass(i) {
-    return (stop.data[i].count + added[i]) == 0 ? 'tag' : 'tag tag-default';
+    return (stop.tags[i].count == 0) ? 'tag' : 'tag tag-default';
 }
 
 /*
@@ -241,7 +254,7 @@ function getQueryParam(name) {
 function getTag(i) {
     return (
         '<button type="button" id="btn-' + i + '" class="' + getClass(i) + '">' +
-        format(stop.data[i].name, stop.data[i].count) +
+            format(stop.tags[i].label, stop.tags[i].count) +
         '</button>'
     );
 }
@@ -261,6 +274,22 @@ function getCard(image) {
     );
 }
 
+/* 
+ * PUTs the given stop, taking the desired success and
+ * error functions to be called accordingly
+ */
+function put(stop, success, error) {
+    $.ajax({
+        type: 'PUT',
+        url: WEB_SERVICE + stop.id,
+        data: JSON.stringify(stop),
+        dataType: 'json',
+        contentType: 'application/json',
+        success: success,
+        error: error
+    });
+}
+
 /* make a GET request and then load the page */
 $(document).ready(function() {
     $.ajax({
@@ -269,6 +298,7 @@ $(document).ready(function() {
         contentType: 'text/json',
         success: function (data) {
             $('#loading').hide();
+            console.log(JSON.stringify(data));
             setup(data);
         },
         error: function (err) {
