@@ -10,8 +10,7 @@ const CONTAINER = 'images';
 const URI = 'https://' + ACC_NAME + '.blob.core.windows.net';
 const SAS = '?sv=2018-03-28&ss=b&srt=sco&sp=rwdlac&se=2019-07-07T09:14:24Z&st=2019-06-02T01:14:24Z&spr=https,http&sig=1igslCpL6xJxEixCaSQIg1CnLBvwy3migpf1p2jTpk8%3D';
 const BLOB_STORE = AzureStorage.Blob.createBlobServiceWithSas(URI, SAS);
-//const WEB_SERVICE = 'https://localhost:8080/stops/';
-const WEB_SERVICE = 'https://polarisuwu.azurewebsites.net/stops/';
+const WEB_SERVICE = 'https://polarisuw.azurewebsites.net/stops/';
 
 /* sets everything up once we have the stop data */
 function setup(data) {
