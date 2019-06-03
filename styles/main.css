@@ -215,6 +215,10 @@ textarea {
 }
 
 button:disabled {
+    opacity: 1;
+}
+
+#ok:disabled {
     opacity: 0.7;
 }
 
