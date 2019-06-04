@@ -2,6 +2,7 @@
 <html>
     <head>
         <title></title>
+        <link rel="shortcut icon" type="image/png" href="images/logo.png">
         <link rel="stylesheet" href="styles/main.css">
 
         <script type="text/javascript" src="scripts/jquery-3.4.1.min.js"></script>
@@ -20,17 +21,17 @@
         </div>
         <div class="row center">
             <h3 id="access-text"></h3>
-            <p>Do you agree?</p>
+            <p>is it accessible to you?</p>
             <button id="yes" class="green">Yes</button>
             <button id="no" class="red">No</button>
         </div>
         <div id="tag-row" class="row center">
-            <h3>What have users said about this stop?</h3>
+            <h3>Accessibility issues with this stop</h3>
             <p>click the tags below to share your thoughts</p>
             <div class="container tag-container"></div>
         </div>
         <div id="img-row" class="row center">
-            <h3>What does the stop look like?</h3>
+            <h3>Images of this stop</h3>
             <p>view and share images of this bus stop</p>
             <button id="upload-button" type="button">Select Image to Upload</button>
             <div class="container image-container"></div>
@@ -38,13 +39,13 @@
         <div id="loading"><div class="lds-dual-ring"></div></div>
 
         <!-- modal for viewing images -->
-        <div id="img-modal" class="modal">
+        <div id="img-modal" class="modal" role="alertdialog">
             <span class="close">&times</span>
             <img>
         </div>
 
         <!-- modal for uploading images -->
-        <div id="upload-modal" class="modal">
+        <div id="upload-modal" class="modal" role="alertdialog">
             <span class="close">&times</span>
             <div id="image-form">
                 <div class="form-section">

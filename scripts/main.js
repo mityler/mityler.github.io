@@ -3,6 +3,7 @@ var files;  /* files being uploaded */
 
 const ESCAPE = 27;                              /* keycode of the escape button */
 const DEFAULT_ALT = "a picture of a bus stop";  /* default alt text */
+const WEB_SERVICE = 'https://polarisuw.azurewebsites.net/stops/';
 
 /* constants for interaction with the blob store */
 const ACC_NAME = 'polarisImages'
@@ -10,7 +11,6 @@ const CONTAINER = 'images';
 const URI = 'https://' + ACC_NAME + '.blob.core.windows.net';
 const SAS = '?sv=2018-03-28&ss=b&srt=sco&sp=rwdlac&se=2019-07-07T09:14:24Z&st=2019-06-02T01:14:24Z&spr=https,http&sig=1igslCpL6xJxEixCaSQIg1CnLBvwy3migpf1p2jTpk8%3D';
 const BLOB_STORE = AzureStorage.Blob.createBlobServiceWithSas(URI, SAS);
-const WEB_SERVICE = 'https://polarisuw.azurewebsites.net/stops/';
 
 /* sets everything up once we have the stop data */
 function setup(data) {
@@ -23,8 +23,8 @@ function setup(data) {
     $('#score h1').html(stop.score);
     $('#score p').html('(' + stop.ratings + ' ratings)');
     $('#access-text').html(
-        'This stop is accessible to ' + stop.yesAccessible + ' of ' +
-            (stop.yesAccessible + stop.noAccessible) + ' users'
+        stop.yesAccessible + ' of ' + (stop.yesAccessible + stop.noAccessible) + 
+            ' users found this stop accessible'
     );
 
     /* reformat the data for use later */
@@ -114,6 +114,24 @@ function setup(data) {
         if (e.keyCode == ESCAPE) {
             resetModal();
             $('.modal').hide();
+        } else if (e.keyCode == 37 || e.keyCode == 39) {
+            let index = -1;
+            for (let i = 0; i < stop.images.length; i++) {
+                let image = stop.images[i];
+                if (image.imageUrl == $('#img-modal img').attr('src')) {
+                    index = i;
+                    break;
+                }
+            }
+            if (e.keyCode == 37) {
+                if (index > 0) {
+                    $('#img-modal img').attr('src', stop.images[index - 1].imageUrl);
+                }
+            } else if (e.keyCode == 39) {
+                if (index >= 0 && index < stop.images.length - 1) {
+                    $('#img-modal img').attr('src', stop.images[index + 1].imageUrl);
+                }
+            }
         }
     });
 
@@ -159,7 +177,7 @@ function setup(data) {
                         date.getDate() + '/' +
                         date.getFullYear()
                     };
-                    stop.images.push(newImage);
+                    stop.images.unshift(newImage);
                     $('.image-container').prepend(getCard(newImage));
 
                     $('.empty').remove();  /* remove default empty text */
@@ -224,8 +242,8 @@ function buttonClicked(clicked) {
                 $('#yes').attr('disabled', false);
                 $('#no').attr('disabled', false);
                 $('#access-text').html(
-                    'This stop is accessible to ' + stop.yesAccessible + ' of ' +
-                        (stop.yesAccessible + stop.noAccessible) + ' users'
+                    stop.yesAccessible + ' of ' + (stop.yesAccessible + stop.noAccessible) + 
+                        ' users found this stop accessible'
                 );
             }, 1500);
         },
@@ -334,7 +352,6 @@ $(document).ready(function() {
         contentType: 'text/json',
         success: function (data) {
             $('#loading').hide();
-            console.log(JSON.stringify(data));
             setup(data);
         },
         error: function (err) {
