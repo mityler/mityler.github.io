@@ -81,6 +81,7 @@ function setup(data) {
                 setTimeout(function() {
                     clicked.html(oldHtml);
                     clicked.attr('disabled', false);
+                    clicked.focus();
                 }, 1500);
             },
             function(err) {
@@ -107,6 +108,7 @@ function setup(data) {
     $('.close').click(function() {
         resetModal();
         $('.modal').hide();
+        $('#upload-button').focus();
     });
 
     /* Close any modal when escape is pressed */
@@ -114,6 +116,7 @@ function setup(data) {
         if (e.keyCode == ESCAPE) {
             resetModal();
             $('.modal').hide();
+            $('#upload-button').focus();
         } else if (e.keyCode == 37 || e.keyCode == 39) {
             let index = -1;
             for (let i = 0; i < stop.images.length; i++) {
@@ -159,6 +162,7 @@ function setup(data) {
     $('#cancel').click(function() {
         resetModal();
         $('.modal').hide();
+        $('#upload-button').focus();
     });
 
     /* Upload images to server and update the page */
@@ -194,6 +198,7 @@ function setup(data) {
                         function(res) {
                             resetModal();
                             $('.modal').hide();
+                            $('#upload-button').focus();
                         },
                         function(err) {
                             console.log(err);
@@ -209,6 +214,7 @@ function setup(data) {
     $('#img-modal').click(function() {
         resetModal();
         $('.modal').hide();
+        $('#upload-button').focus();
     });
 
     /* Locally save uploaded files and enable the 'Ok' button */
@@ -245,6 +251,7 @@ function buttonClicked(clicked) {
                     stop.yesAccessible + ' of ' + (stop.yesAccessible + stop.noAccessible) + 
                         ' users found this stop accessible'
                 );
+                clicked.focus();
             }, 1500);
         },
         function(err) {

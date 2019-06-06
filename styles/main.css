@@ -106,7 +106,7 @@ p {
 }
 
 .card div {
-    font-size: 14px;
+    font-size: 16px;
     text-align: right;
     padding: 5px;
 }
@@ -128,11 +128,11 @@ p {
     font-style: italic;
 }
 
-button:enabled, label {
+button:enabled {
     cursor: pointer;
 }
 
-button:hover, label:hover {
+button:hover {
     opacity: 0.8;
 }
 
